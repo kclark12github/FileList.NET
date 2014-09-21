@@ -90,7 +90,7 @@ Public Class clsFileList
                     Dim Parms As String() = { _
                         Root.Root.ToString, _
                         "FileList", _
-                        Replace(Root.Name, ":\", vbNullString), _
+                        Root.Name.Replace(":\", vbNullString), _
                         .Year.ToString & .Month.ToString("00") & .Day.ToString("00"), _
                         .Hour.ToString("00") & .Minute.ToString("00") & .Second.ToString("00")}
                     OutputFileName = String.Format("{0}{1}-{2}.{3}.{4}.csv", Parms)
