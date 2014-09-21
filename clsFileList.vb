@@ -2,6 +2,19 @@ Imports System.IO
 Imports System.IO.Directory
 Imports System.IO.File
 Public Class clsFileList
+    Public Sub CountFiles(ByVal BaseDir As DirectoryInfo, ByRef cntFolders As Long, ByRef cntFiles As Long)
+        Try
+            Dim diList As DirectoryInfo() = BaseDir.GetDirectories()
+            For Each di As DirectoryInfo In diList
+                cntFolders += 1
+                CountFiles(di, cntFiles, cntFolders)
+            Next
+            Dim fiList As FileInfo() = BaseDir.GetFiles()
+            cntFiles += fiList.Length
+        Catch ex As Exception
+            MessageBox.Show(ex.ToString, "FileList", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification)
+        End Try
+    End Sub
     Public Sub ListFiles(ByVal BaseDir As DirectoryInfo, ByVal sw As StreamWriter)
         Try
             Dim diList As DirectoryInfo() = BaseDir.GetDirectories()
@@ -50,9 +63,10 @@ Public Class clsFileList
 
             If args.Length < 2 Then
                 Dim Message As String = _
-                    "args(0) = Full path name of the executable" & vbCrLf & _
-                    "args(1) = Root directory to list files" & vbCrLf & _
-                    "args(2) = Optional output file name"
+                    "FileList Options:" & vbCrLf & _
+                    vbTab & "args(0) = Full path name of the executable" & vbCrLf & _
+                    vbTab & "args(1) = Root directory to list files" & vbCrLf & _
+                    vbTab & "args(2) = Optional output file name"
                 MessageBox.Show(Message, "FileList", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification)
                 Return 1
             End If
@@ -71,7 +85,7 @@ Public Class clsFileList
                     Dim Parms As String() = { _
                         Root.Root.ToString, _
                         "FileList", _
-                        Root.Name, _
+                        Replace(Root.Name, ":\", vbNullString), _
                         .Year.ToString & .Month.ToString("00") & .Day.ToString("00"), _
                         .Hour.ToString("00") & .Minute.ToString("00") & .Second.ToString("00")}
                     OutputFileName = String.Format("{0}{1}-{2}.{3}.{4}.csv", Parms)
@@ -80,6 +94,12 @@ Public Class clsFileList
             sw = New StreamWriter(OutputFileName)
             sw.WriteLine(String.Format("{0},{1},{2},{3},{4},{5}", Entry))
             Try
+                'Dim cntFolders As Long = 0
+                'Dim cntFiles As Long = 0
+                'fl.CountFiles(Root, cntFolders, cntFiles)
+                ''Use these stats to display a window with a progress bar...
+                'Dim frm As New frmStats
+                'frm.ShowDialog()
                 fl.ListFiles(Root, sw)
                 sw.Close()
             Catch ex As Exception
