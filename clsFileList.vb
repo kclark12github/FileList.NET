@@ -19,14 +19,19 @@ Public Class clsFileList
         Try
             Dim diList As DirectoryInfo() = BaseDir.GetDirectories()
             For Each di As DirectoryInfo In diList
-                Dim Entry() As String = { _
-                    di.FullName, _
-                    di.Attributes.ToString, _
-                    di.CreationTime.ToString, _
-                    di.LastAccessTime.ToString, _
-                    di.LastWriteTime.ToString}
-                sw.WriteLine(String.Format("""{0}"",0 bytes,""{1}"",{2},{3},{4}", Entry))
-                ListFiles(di, sw)
+                Select Case di.Name
+                    Case "System Volume Information"
+                    Case "Temporary Internet Files"
+                    Case Else
+                        Dim Entry() As String = { _
+                            di.FullName, _
+                            di.Attributes.ToString, _
+                            di.CreationTime.ToString, _
+                            di.LastAccessTime.ToString, _
+                            di.LastWriteTime.ToString}
+                        sw.WriteLine(String.Format("""{0}"",0 bytes,""{1}"",{2},{3},{4}", Entry))
+                        ListFiles(di, sw)
+                End Select
             Next
             Dim fiList As FileInfo() = BaseDir.GetFiles()
             For Each fi As FileInfo In fiList
