@@ -35,9 +35,6 @@ Public Class clsFileList
         System.Environment.ExitCode = Main(System.Environment.GetCommandLineArgs())
     End Sub
     Private Overloads Shared Function Main(ByVal args() As String) As Integer
-        'args(0) = Full path name of the executable...
-        'args(1) = Root directory to list files...
-        'args(2) = Optional output file name...
         Dim sw As StreamWriter
         Dim OutputFileName As String
         Try
@@ -50,8 +47,21 @@ Public Class clsFileList
                 "LastAccessTime", _
                 "LastWriteTime"}
 
+
+            If args.Length < 2 Then
+                Dim Message As String = _
+                    "args(0) = Full path name of the executable" & vbCrLf & _
+                    "args(1) = Root directory to list files" & vbCrLf & _
+                    "args(2) = Optional output file name"
+                MessageBox.Show(Message, "FileList", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification)
+                Return 1
+            End If
+
             Dim Root As DirectoryInfo = New DirectoryInfo(args(1))
-            If Not Root.Exists Then Return 1
+            If Not Root.Exists Then
+                MessageBox.Show(String.Format("{0} does not exist!", args(1)), "FileList", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification)
+                Return 1
+            End If
 
             If args.Length = 3 Then
                 OutputFileName = args(2)
@@ -69,11 +79,15 @@ Public Class clsFileList
             End If
             sw = New StreamWriter(OutputFileName)
             sw.WriteLine(String.Format("{0},{1},{2},{3},{4},{5}", Entry))
-            fl.ListFiles(Root, sw)
-            sw.Close()
+            Try
+                fl.ListFiles(Root, sw)
+                sw.Close()
+            Catch ex As Exception
+                sw.WriteLine(ex.ToString)
+            End Try
             Return 0
         Catch ex As Exception
-            sw.WriteLine(ex.ToString)
+            MessageBox.Show(ex.ToString, "FileList", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification)
         End Try
     End Function
 End Class
