@@ -54,7 +54,7 @@ Public Class clsFileList
     End Sub
     Private Overloads Shared Function Main(ByVal args() As String) As Integer
         Dim sw As StreamWriter
-        Dim outputFileName As String
+        Dim OutputFileName As String
         Try
             Dim fl As New clsFileList
             Dim Entry() As String = { _
@@ -83,7 +83,7 @@ Public Class clsFileList
             End If
 
             If args.Length = 3 Then
-                outputFileName = args(2)
+                OutputFileName = args(2)
             Else
                 Dim dtNow As Date = Now
                 With dtNow
@@ -93,10 +93,10 @@ Public Class clsFileList
                         Root.Name.Replace(":\", vbNullString), _
                         .Year.ToString & .Month.ToString("00") & .Day.ToString("00"), _
                         .Hour.ToString("00") & .Minute.ToString("00") & .Second.ToString("00")}
-                    outputFileName = String.Format("{0}{1}-{2}.{3}.{4}.csv", Parms)
+                    OutputFileName = String.Format("{0}{1}-{2}.{3}.{4}.csv", Parms)
                 End With
             End If
-            sw = New StreamWriter(outputFileName)
+            sw = New StreamWriter(OutputFileName)
             sw.WriteLine(String.Format("{0},{1},{2},{3},{4},{5}", Entry))
             Try
                 'Dim cntFolders As Long = 0
