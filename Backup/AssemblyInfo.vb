@@ -16,7 +16,6 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTrademark("")> 
 <Assembly: CLSCompliant(True)> 
 
-'The following GUID is for the ID of the typelib if this project is exposed to COM
 <Assembly: Guid("F18EDEF4-436F-4374-9723-71AD9BBD1DBE")> 
 
 ' Version information for an assembly consists of the following four values:
